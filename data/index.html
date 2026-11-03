@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f4f1">
+  <title>FruitSnack</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/fruitsnack.css">
+</head>
+<body data-conn="offline">
+  <svg class="svg-sprite" aria-hidden="true">
+    <defs>
+      <symbol id="icon-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 7.2c-3.7 0-6.6 2.3-6.6 5.3 0 3.7 3.2 7.7 6.6 7.7s6.6-4 6.6-7.7c0-3-2.9-5.3-6.6-5.3Z"/>
+        <path d="M9.2 5.6c.8-1.2 1.9-1.8 3-1.8s2.2.6 3 1.8"/>
+        <path d="M12 3.8V2.2M8.2 5.2 7 4M15.8 5.2 17 4"/>
+        <path d="M9.4 11h.01M12 11h.01M14.6 11h.01M10.7 14h.01M13.3 14h.01M12 16.8h.01"/>
+      </symbol>
+      <symbol id="icon-cockpit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4.2 18.5a9 9 0 1 1 15.6 0"/>
+        <path d="M12 13.5 16 9.7"/>
+        <path d="M12 19.5h.01M5 15h.01M19 15h.01"/>
+      </symbol>
+      <symbol id="icon-machine" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h9M17 18h3"/>
+        <circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="18" r="2"/>
+      </symbol>
+      <symbol id="icon-console" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2.5"/>
+        <path d="m7 9 3 3-3 3M13 15h4"/>
+      </symbol>
+      <symbol id="icon-power" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v8"/>
+        <path d="M6.4 6.6a8 8 0 1 0 11.2 0"/>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 4 2.8 20h18.4L12 4Z"/>
+        <path d="M12 9.5v4M12 17h.01"/>
+      </symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m9 6 6 6-6 6"/>
+      </symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="8" width="12" height="12" rx="2"/>
+        <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>
+      </symbol>
+      <symbol id="icon-tune" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 7h5M13 7h7M4 17h7M15 17h5"/>
+        <circle cx="11" cy="7" r="2"/><circle cx="13" cy="17" r="2"/>
+      </symbol>
+      <symbol id="icon-sensor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 14.3V5a2 2 0 1 1 4 0v9.3a4 4 0 1 1-4 0Z"/>
+        <path d="M12 9v6"/>
+      </symbol>
+      <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m4 12 16-8-5.5 16-3.2-6.8L4 12Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app" id="app">
+    <header class="app-bar" id="app-bar">
+      <a class="brand" href="#dashboard" aria-label="FruitSnack cockpit">
+        <span class="brand-mark" aria-hidden="true">
+          <svg><use href="#icon-logo"/></svg>
+        </span>
+        <span class="brand-text">
+          <span class="app-title" id="app-title">FruitSnack</span>
+          <span class="brand-sub" id="app-host">hotend controller</span>
+        </span>
+      </a>
+
+      <div class="app-status" id="app-state">
+        <div class="status-pill" id="conn-pill" data-state="offline">
+          <span class="dot"></span>
+          <span class="label">Offline</span>
+        </div>
+        <span class="last-update" id="last-update"></span>
+      </div>
+
+      <div class="app-actions">
+        <span class="heater-badge" id="app-badge" hidden>Heater on</span>
+        <button class="btn btn-danger btn-compact heater-off-btn" id="heater-off-btn" type="button" aria-label="Heater Off" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#icon-power"/></svg>
+          <span class="btn-label">Heater Off</span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+      <div class="nav-main">
+        <a class="nav-item active" href="#dashboard" data-section="dashboard" aria-selected="true">
+          <svg class="icon" aria-hidden="true"><use href="#icon-cockpit"/></svg>
+          <span>Cockpit</span>
+        </a>
+        <a class="nav-item" href="#machine" data-section="machine" aria-selected="false">
+          <svg class="icon" aria-hidden="true"><use href="#icon-machine"/></svg>
+          <span>Machine</span>
+        </a>
+        <a class="nav-item" href="#console" data-section="console" aria-selected="false">
+          <svg class="icon" aria-hidden="true"><use href="#icon-console"/></svg>
+          <span>Console</span>
+        </a>
+      </div>
+      <div class="nav-foot">
+        <span class="nav-foot-line" id="nav-fw">firmware —</span>
+        <span class="nav-foot-line" id="nav-ip">waiting for device</span>
+      </div>
+    </nav>
+
+    <div class="global-alert" id="global-alert" role="alert" hidden>
+      <svg class="alert-icon" aria-hidden="true"><use href="#icon-alert"/></svg>
+      <span class="alert-text" id="alert-text">Fault detected</span>
+    </div>
+
+    <main class="main" id="main">
+      <section class="section active" id="dashboard" aria-labelledby="dash-title">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Controller</p>
+            <h1 id="dash-title">Cockpit</h1>
+          </div>
+          <p class="page-note" id="dash-note">Waiting for telemetry.</p>
+        </div>
+
+        <div class="cockpit-grid">
+          <article class="card hero-card" aria-labelledby="hero-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Hotend</p>
+                <h2 class="card-title" id="hero-title">Temperature</h2>
+              </div>
+              <span class="chip" id="state-chip" data-tone="neutral">
+                <span class="chip-dot" id="state-dot"></span>
+                <span id="state-label">Waiting</span>
+              </span>
+            </div>
+
+            <div class="hero-body">
+              <div class="gauge">
+                <svg class="gauge-svg" id="gauge-svg" viewBox="0 0 200 200" role="img" aria-label="Temperature gauge">
+                  <circle class="gauge-arc gauge-track" cx="100" cy="100" r="84"/>
+                  <circle class="gauge-arc gauge-progress" id="gauge-progress" cx="100" cy="100" r="84"/>
+                  <circle class="gauge-arc gauge-target" id="gauge-target" cx="100" cy="100" r="84"/>
+                </svg>
+                <div class="gauge-center">
+                  <div class="gauge-reading">
+                    <span class="gauge-value" id="dash-temp">--.-</span>
+                    <span class="gauge-unit">°C</span>
+                  </div>
+                  <span class="gauge-target-line" id="hero-target">Target —</span>
+                </div>
+              </div>
+
+              <div class="hero-detail">
+                <p class="hero-delta" id="hero-delta">Waiting for telemetry</p>
+                <div class="stat-grid">
+                  <div class="stat">
+                    <span class="stat-label">Target</span>
+                    <span class="stat-value" id="dash-setpoint">--.-</span>
+                    <span class="stat-unit">°C</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Output</span>
+                    <span class="stat-value" id="dash-output">--</span>
+                    <span class="stat-unit">%</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Raw</span>
+                    <span class="stat-value" id="dash-raw">--.-</span>
+                    <span class="stat-unit">°C</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Duty</span>
+                    <span class="stat-value" id="dash-duty">--</span>
+                    <span class="stat-unit">LEDC</span>
+                  </div>
+                </div>
+
+                <div class="primary-warning" id="dash-primary-warning" hidden></div>
+
+                <details class="sensor-disclosure" id="sensor-disclosure">
+                  <summary>
+                    <span class="summary-label">Sensor</span>
+                    <span class="summary-value" id="sensor-summary">Waiting</span>
+                    <svg class="summary-chevron" aria-hidden="true"><use href="#icon-chevron"/></svg>
+                  </summary>
+                  <div class="sensor-peek">
+                    <div class="mini-stat"><span>Node</span><strong id="detail-adc-mv">--</strong></div>
+                    <div class="mini-stat"><span>ADC</span><strong id="detail-adc-raw">--</strong></div>
+                    <div class="mini-stat"><span>Thermistor</span><strong id="detail-ntc-resistance">--</strong></div>
+                    <div class="mini-stat"><span>Warning</span><strong id="detail-warning">none</strong></div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </article>
+
+          <article class="card controls-card" aria-labelledby="controls-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Control</p>
+                <h2 class="card-title" id="controls-title">Setpoint</h2>
+              </div>
+              <span class="micro-status" id="write-status">Read-only</span>
+            </div>
+
+            <div class="setpoint-block">
+              <button class="step-btn" id="sp-minus" type="button" aria-label="Decrease setpoint" disabled>−</button>
+              <label class="setpoint-field" for="sp-input">
+                <input type="number" id="sp-input" min="0" max="350" step="1" value="" inputmode="decimal" disabled>
+                <span class="setpoint-unit">°C</span>
+              </label>
+              <button class="step-btn" id="sp-plus" type="button" aria-label="Increase setpoint" disabled>+</button>
+            </div>
+            <input type="range" id="sp-slider" min="0" max="350" step="1" value="0" disabled aria-label="Setpoint slider">
+            <div class="range-scale"><span>0</span><span id="sp-max-label">350 °C</span></div>
+
+            <div class="field-block">
+              <div class="field-head">
+                <span class="field-label">Mode</span>
+                <span class="field-hint" id="mode-note">Off</span>
+              </div>
+              <div class="segmented" id="mode-group" role="group" aria-label="Heater mode">
+                <button type="button" data-mode="off" class="active" disabled>Off</button>
+                <button type="button" data-mode="pid" disabled>PID</button>
+                <button type="button" data-mode="manual" disabled>Manual</button>
+              </div>
+              <p class="inline-error" id="mode-error" hidden></p>
+            </div>
+
+            <div class="field-block manual-block" id="manual-block" hidden>
+              <div class="field-head">
+                <label class="field-label" for="manual-input">Manual duty</label>
+                <span class="field-hint">0–100%</span>
+              </div>
+              <div class="inline-input">
+                <input type="number" id="manual-input" min="0" max="100" step="1" value="" inputmode="decimal" disabled>
+                <span class="suffix">%</span>
+              </div>
+              <input type="range" id="manual-slider" min="0" max="100" step="1" value="0" disabled aria-label="Manual duty slider">
+            </div>
+
+            <button class="btn btn-primary btn-block" id="heater-toggle" type="button" disabled>Start PID</button>
+            <p class="form-hint" id="control-hint">Writes apply immediately over REST.</p>
+          </article>
+
+          <article class="card chart-card" aria-labelledby="chart-title">
+            <div class="card-top chart-top">
+              <div>
+                <p class="eyebrow">History</p>
+                <h2 class="card-title" id="chart-title">Temperature</h2>
+              </div>
+              <div class="chart-tools">
+                <div class="chart-legend" aria-hidden="true">
+                  <span class="legend-item temp"><i></i>Actual</span>
+                  <span class="legend-item sp"><i></i>Target</span>
+                  <span class="legend-item out"><i></i>Output</span>
+                </div>
+                <div class="segmented segmented-sm" id="chart-windows" role="group" aria-label="Chart time window">
+                  <button type="button" data-window="60" class="active">1m</button>
+                  <button type="button" data-window="300">5m</button>
+                  <button type="button" data-window="900" title="The device holds 225 seconds of history">Max · 225s</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-slot" id="chart-slot-dashboard">
+              <canvas id="temp-chart" role="img" aria-label="Temperature, target and heater output over time"></canvas>
+              <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+            </div>
+            <div class="chart-foot">
+              <span id="chart-range">Last 60 seconds</span>
+              <span>Telemetry at 4 Hz</span>
+            </div>
+          </article>
+
+          <div class="rail">
+            <article class="card system-card" aria-labelledby="system-title">
+              <div class="card-top">
+                <div>
+                  <p class="eyebrow">System</p>
+                  <h2 class="card-title" id="system-title">Health</h2>
+                </div>
+              </div>
+              <div class="mini-grid">
+                <div class="mini-stat"><span class="mini-label">Uptime</span><strong class="mini-value" id="sys-uptime">--</strong></div>
+                <div class="mini-stat"><span class="mini-label">Signal</span><strong class="mini-value" id="sys-rssi">--</strong></div>
+                <div class="mini-stat"><span class="mini-label">Free heap</span><strong class="mini-value" id="sys-heap">--</strong></div>
+                <div class="mini-stat"><span class="mini-label">Storage</span><strong class="mini-value" id="sys-littlefs">--</strong></div>
+              </div>
+              <div class="storage-track" aria-hidden="true"><div id="sys-storage-fill"></div></div>
+            </article>
+
+            <article class="card loop-card" aria-labelledby="loop-title">
+              <div class="card-top">
+                <div>
+                  <p class="eyebrow">Control loop</p>
+                  <h2 class="card-title" id="loop-title">PID</h2>
+                </div>
+                <span class="chip chip-warn" id="loop-saturated" hidden>Saturated</span>
+              </div>
+              <div class="term-grid">
+                <div class="term"><span class="term-label">P</span><strong class="term-value" id="loop-p">--</strong></div>
+                <div class="term"><span class="term-label">I</span><strong class="term-value" id="loop-i">--</strong></div>
+                <div class="term"><span class="term-label">D</span><strong class="term-value" id="loop-d">--</strong></div>
+              </div>
+              <div class="card-foot">
+                <a class="text-link" href="#machine">
+                  <svg class="icon" aria-hidden="true"><use href="#icon-tune"/></svg>
+                  Tune PID and sensor
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="machine" aria-labelledby="machine-title">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Configuration</p>
+            <h1 id="machine-title">Machine</h1>
+          </div>
+          <p class="page-note">Settings write to flash and survive a reboot.</p>
+        </div>
+
+        <div class="machine-grid">
+          <article class="card span-7 pid-card" aria-labelledby="pid-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Control</p>
+                <h2 class="card-title" id="pid-title">PID gains</h2>
+              </div>
+            </div>
+            <p class="card-desc">Tune only after the sensor is calibrated. Saturated output means the loop is at a duty limit.</p>
+            <div class="gains-form">
+              <div class="gain-field">
+                <label for="gain-kp">Kp</label>
+                <input type="number" id="gain-kp" min="0" max="1000" step="0.1" value="" disabled>
+              </div>
+              <div class="gain-field">
+                <label for="gain-ki">Ki</label>
+                <input type="number" id="gain-ki" min="0" max="100" step="0.01" value="" disabled>
+              </div>
+              <div class="gain-field">
+                <label for="gain-kd">Kd</label>
+                <input type="number" id="gain-kd" min="0" max="10000" step="0.1" value="" disabled>
+              </div>
+            </div>
+            <div class="gains-actions">
+              <button class="btn btn-primary" id="apply-gains" type="button" disabled>Apply gains</button>
+              <button class="btn btn-ghost" id="reset-gains" type="button" disabled>Reset</button>
+            </div>
+            <p class="field-hint" id="gain-note">P 0–1000 · I 0–100 · D 0–10000</p>
+          </article>
+
+          <article class="card span-5 terms-card" aria-labelledby="terms-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Live</p>
+                <h2 class="card-title" id="terms-title">Loop terms</h2>
+              </div>
+              <span class="chip chip-warn" id="saturated" hidden>Saturated</span>
+            </div>
+            <div class="term-grid term-grid-lg">
+              <div class="term"><span class="term-label">P</span><strong class="term-value" id="term-p">--</strong></div>
+              <div class="term"><span class="term-label">I</span><strong class="term-value" id="term-i">--</strong></div>
+              <div class="term"><span class="term-label">D</span><strong class="term-value" id="term-d">--</strong></div>
+            </div>
+            <div class="loop-meta loop-meta-stack">
+              <span>Mode <strong id="machine-mode">--</strong></span>
+              <span>Output <strong id="machine-output">--</strong></span>
+              <span>Setpoint <strong id="machine-setpoint">--</strong></span>
+            </div>
+          </article>
+
+          <article class="card span-7 sensor-card" aria-labelledby="sensor-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Sensor</p>
+                <h2 class="card-title" id="sensor-title">Calibration</h2>
+              </div>
+              <svg class="header-icon" aria-hidden="true"><use href="#icon-sensor"/></svg>
+            </div>
+            <div class="sensor-warn" id="sensor-warn-machine" role="alert" hidden></div>
+            <dl class="info-list" id="sensor-diag"></dl>
+            <div class="field-grid">
+              <div class="field">
+                <label for="sensor-offset">Offset</label>
+                <div class="inline-input">
+                  <input type="number" id="sensor-offset" min="-50" max="50" step="0.1" value="" disabled>
+                  <span class="suffix">°C</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="ntc-pullup">Pull-up</label>
+                <div class="inline-input">
+                  <input type="number" id="ntc-pullup" min="100" step="10" value="" disabled>
+                  <span class="suffix">Ω</span>
+                </div>
+              </div>
+            </div>
+            <p class="field-hint">Offset is clamped to ±50 °C. Pull-up must match the resistor between 3V3 and GPIO1 (4.7 kΩ on the reference board).</p>
+            <button class="btn btn-primary" id="save-cal" type="button" disabled>Save calibration</button>
+          </article>
+
+          <article class="card span-5 device-card" aria-labelledby="device-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Hardware</p>
+                <h2 class="card-title" id="device-title">Device</h2>
+              </div>
+            </div>
+            <dl class="info-list" id="device-info"></dl>
+          </article>
+
+          <article class="card span-7 logs-card" aria-labelledby="logs-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Diagnostics</p>
+                <h2 class="card-title" id="logs-title">Live logs</h2>
+              </div>
+              <span class="micro-status">Polled every 3 s</span>
+            </div>
+            <div class="log-viewer" id="log-viewer"></div>
+          </article>
+
+          <article class="card span-5 memory-card" aria-labelledby="memory-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Resources</p>
+                <h2 class="card-title" id="memory-title">Memory &amp; storage</h2>
+              </div>
+            </div>
+            <dl class="info-list" id="memory-info"></dl>
+          </article>
+
+          <article class="card span-7 state-card" aria-labelledby="state-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Debug</p>
+                <h2 class="card-title" id="state-title">Raw state</h2>
+              </div>
+              <button class="btn btn-sm btn-ghost" id="copy-state" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg>
+                Copy
+              </button>
+            </div>
+            <details class="state-details">
+              <summary>Show the current state payload</summary>
+              <pre class="json-block" id="state-json">Waiting for state…</pre>
+            </details>
+          </article>
+
+          <article class="card span-5 reboot-card" aria-labelledby="reboot-title">
+            <div class="card-top">
+              <div>
+                <p class="eyebrow">Danger zone</p>
+                <h2 class="card-title" id="reboot-title">Reboot</h2>
+              </div>
+            </div>
+            <p class="card-desc">Restart the controller. The connection drops for a few seconds.</p>
+            <button class="btn btn-danger" id="reboot-btn" type="button" disabled>
+              <svg class="icon" aria-hidden="true"><use href="#icon-power"/></svg>
+              Reboot controller
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="console" aria-labelledby="console-title">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">Serial channel</p>
+            <h1 id="console-title">Console</h1>
+          </div>
+          <p class="page-note">Commands run on the controller. History stays in this browser.</p>
+        </div>
+
+        <article class="card console-card" aria-labelledby="terminal-title">
+          <div class="console-top">
+            <div class="console-title-group">
+              <h2 class="card-title" id="terminal-title">Terminal</h2>
+              <span class="console-conn" id="console-conn"><span class="dot"></span>Waiting</span>
+            </div>
+            <div class="console-actions">
+              <button class="btn btn-sm btn-ghost" id="cmd-status" type="button">status</button>
+              <button class="btn btn-sm btn-ghost" id="cmd-help" type="button">help</button>
+              <button class="btn btn-sm btn-ghost" id="cmd-info" type="button">info</button>
+              <label class="check-control"><input type="checkbox" id="autoscroll" checked> Auto-scroll</label>
+              <button class="btn btn-sm btn-ghost" id="console-clear" type="button">Clear</button>
+            </div>
+          </div>
+          <div class="terminal" id="terminal" role="log" aria-live="polite" aria-relevant="additions">
+            <div class="terminal-lines" id="terminal-lines"></div>
+          </div>
+          <form class="console-input" id="console-form" autocomplete="off">
+            <span class="prompt" aria-hidden="true">›</span>
+            <input type="text" id="console-input" placeholder="Type a command and press Enter" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Console command">
+            <button class="btn btn-primary" type="submit">
+              <svg class="icon" aria-hidden="true"><use href="#icon-send"/></svg>
+              Send
+            </button>
+          </form>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+  </div>
+
+  <dialog class="reboot-dialog" id="reboot-dialog">
+    <div class="dialog-content">
+      <p class="eyebrow">Confirm</p>
+      <h2>Reboot FruitSnack?</h2>
+      <p>The connection will drop for a few seconds. The hotend stays off until the controller boots.</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" id="reboot-cancel-btn" type="button">Cancel</button>
+        <button class="btn btn-danger" id="reboot-confirm-btn" type="button">Reboot</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

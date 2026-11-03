@@ -1,0 +1,58 @@
+# PlatformIO / build
+.pio/
+.cache/
+compile_commands.json
+.dummy
+
+# Editor / local tooling
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch/
+.vscode/settings.json
+.opencode/
+.idea/
+*.bak
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Host-side simulation / verification artefacts
+tools/sim/*.exe
+tools/sim/*.o
+tools/sim/*.txt
+tools/protocol_log.txt
+
+# MATLAB logger output
+matlab/runs/
+matlab/*.mat
+matlab/*.csv
+matlab/*.raw.txt
+matlab/*.asv
+matlab/*~
+
+# Simulink generated models and caches
+matlab/simulink/*.slx
+matlab/simulink/*.slx.autosave
+matlab/simulink/*.mdl
+matlab/simulink/*.asv
+matlab/simulink/*.slxc
+matlab/simulink/slprj/
+slprj/
+
+# Device configuration (may contain WiFi credentials)
+data/config.json
+
+# Firmware / generic build outputs
+*.log
+*.bin
+*.elf
+*.map
