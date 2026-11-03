@@ -59,7 +59,7 @@ to the ASCII telemetry used by `fruitsnack_log`.
 ## Quick start
 
 ```matlab
-cd C:\Documents\PlatformIO\Projects\FruitSnack\matlab\simulink
+cd matlab/simulink
 clear classes          % run this if you have run an older version in this MATLAB session
 build_live_scope("COM9")
 ```
@@ -187,7 +187,7 @@ which -all build_live_scope
 ```
 
 Both should point at this folder. If they point somewhere else (for example
-`C:\Documents\MATLAB\DIG_CTRL\FruitSnack`), MATLAB is running a stale copy.
+an older checkout), MATLAB is running a stale copy.
 Close the model, fix the path, then run `clear classes` or restart MATLAB.
 MATLAB caches class definitions, so replacing the file alone is not enough.
 
